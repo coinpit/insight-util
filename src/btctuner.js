@@ -1,8 +1,7 @@
+var assert = require('affirm.js')
+var io     = require('socket.io-client')
 
-var assert        = require('affirm.js')
-var io            = require('socket.io-client')
-
-module.exports = (function (socketUri, network, insight,util, socket) {
+module.exports = (function (socketUri, network, util, insight, socket) {
   var tuner              = {}
   var subscriptions      = {}
   var unconfirmedBalance = {}
