@@ -1,7 +1,8 @@
 var assert = require('affirm.js')
 var io     = require('socket.io-client')
+var util   = require('util')
 
-module.exports = (function (socketUri, network, util, insight, socket) {
+module.exports = (function (socketUri, network, index, insight, socket) {
   var tuner              = {}
   var subscriptions      = {}
   var unconfirmedBalance = {}
@@ -23,7 +24,7 @@ module.exports = (function (socketUri, network, util, insight, socket) {
   }
 
   socket.on('connect', function () {
-    console.log('Connected to insight websocket', url)
+    util.log(Date.now(), 'Connected to insight websocket', url)
     socket.emit('subscribe', 'inv')
   })
 

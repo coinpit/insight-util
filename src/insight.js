@@ -2,8 +2,9 @@ var bluebird = require('bluebird')
 var REST     = require('rest.js')
 var assert   = require('affirm.js')
 var xlat     = require('xlat')()
+var util     = require('util')
 
-module.exports = function (baseUrl, network, util) {
+module.exports = function (baseUrl, network, index) {
   var insight    = {}
   var dictionary = {
     "address": ['addrStr', 'addr']
@@ -71,7 +72,7 @@ module.exports = function (baseUrl, network, util) {
   }
 
   insight.sendTransaction = function (tx) {
-    if(util.logging)console.log("sendTransaction", tx)
+    if (index.logging)util.log(Date.now(), "sendTransaction", tx)
     return REST.post(baseUrl + '/tx/' + 'send', { "content-type": "application/json" }, { rawtx: tx }).then(function (result) {
       return result.body
     })
