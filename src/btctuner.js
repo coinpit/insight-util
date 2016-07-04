@@ -39,7 +39,9 @@ module.exports = (function (socketUri, network, index, insight, socket) {
       }
     }
     if (match) {
-      addUnconfirmedInputs(data.txid).then(getBalances)
+      addUnconfirmedInputs(data.txid).then(getBalances).catch(function(e) {
+        console.log('Error connecting to insight server', e)
+      })
     }
   }
 
