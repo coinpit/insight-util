@@ -58,7 +58,7 @@ module.exports = (function (socketUri, network, index, insight, socket) {
 
   function getBalances(addresses) {
     if (!addresses || addresses.length === 0) return
-    insight.multi(insight.getAddress, addresses)
+    return insight.multi(insight.getAddress, addresses)
       .then(function (results) {
         for (var i = 0; results && i < results.length; i++) {
           var addressInfo = results[i]
@@ -68,6 +68,7 @@ module.exports = (function (socketUri, network, index, insight, socket) {
           var subscriptionFunction = subscriptions[addressInfo.address]
           if (subscriptionFunction) subscriptionFunction(addressInfo)
         }
+        return results
       })
   }
 
