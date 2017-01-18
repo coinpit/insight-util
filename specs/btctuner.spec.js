@@ -1,8 +1,7 @@
 var expect   = require('expect.js')
 var sinon    = require('sinon')
 var mocksock = require('./MockSocketIOClient')
-var insight  = require('../src/insight')("insightUri", "testnet", {})
-var btctuner = require('../src/btctuner')("insightUri", "testnet", {}, insight, mocksock)
+var insight, btctuner
 var bluebird = require('bluebird')
 var fixtures = require('fixtures.js')(__filename)
 require('mocha-generators').install()
@@ -22,6 +21,10 @@ function asPromise(value) {
 
 describe('Test notifications on address activity', function () {
   beforeEach(function () {
+    insight  = require('../src/insight')("insightUri")
+    btctuner = require('../src/btctuner')("insightUri", insight)
+    btctuner.socket = mocksock
+    btctuner.init()
     sinon.stub(insight, "getTransaction", function (txid) {
       return asPromise(fixtures.blockchainapi.transactions[txid])
     })
@@ -113,3 +116,15 @@ describe('Test notifications on address activity', function () {
   })
 
 })
+
+describe("should calculate socketuri from base uri", function(){
+  fixtures.socketUri.forEach(function(test){
+    it(test.input + "=>" + test.result, function(){
+      var result = btctuner.getSocketUri(test.input)
+      expect(result).to.be.eql(test.result)
+    })
+  })
+
+
+})
+

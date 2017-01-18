@@ -4,12 +4,13 @@ var assert   = require('affirm.js')
 var xlat     = require('xlat')()
 var util     = require('util')
 
-module.exports = function (baseUrl, network, index) {
+module.exports = function (baseUrl) {
   var insight    = {}
   var dictionary = {
     "address": ['addrStr', 'addr']
   }
 
+  insight.logging = false
   xlat.index(dictionary)
 
   insight.sync = function () {
@@ -72,7 +73,7 @@ module.exports = function (baseUrl, network, index) {
   }
 
   insight.sendTransaction = function (tx) {
-    if (index.logging)util.log(Date.now(), "sendTransaction", tx)
+    if (insight.logging) util.log(Date.now(), "sendTransaction", tx)
     return REST.post(baseUrl + '/tx/' + 'send', { "content-type": "application/json" }, { rawtx: tx }).then(function (result) {
       return result.body
     })

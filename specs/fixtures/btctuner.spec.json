@@ -97,5 +97,27 @@
         "fees"         : 0.0001
       }
     }
-  }
+  },
+  "socketUri"    : [
+    {
+      "input": "http://localhost:9000/#",
+      "result": "http://localhost:9000"
+    },
+    {
+      "input": "http://localhost:9000/api/v1",
+      "result": "http://localhost:9000"
+    },
+    {
+      "input": "https://live.coinpit.me/api/v1",
+      "result": "https://live.coinpit.me"
+    },
+    {
+      "input": "https://user:pass@live.coinpit.me/api/v1",
+      "result": "https://live.coinpit.me"
+    },
+    {
+      "input": "https://user:pass@live.coinpit.me/api/v1?key1=value1&key2=value2",
+      "result": "https://live.coinpit.me"
+    }
+  ]
 }

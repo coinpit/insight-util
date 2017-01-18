@@ -1,9 +1,9 @@
-module.exports = function (baseUri, socketUri, network) {
+module.exports = function (baseUri) {
 
   var util = {}
-  var insight  = require("./src/insight")(baseUri, network, util)
-  var btcTuner = require("./src/btctuner")(socketUri, network, util, insight)
-
+  var insight  = require("./src/insight")(baseUri)
+  var btcTuner = require("./src/btctuner")(baseUri, insight)
+  btcTuner.init()
   util =  {
     subscribe             : btcTuner.subscribe,
     unsubscribe           : btcTuner.unsubscribe,

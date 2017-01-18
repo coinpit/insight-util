@@ -1,16 +1,13 @@
-var assert = require('affirm.js')
-var io     = require('socket.io-client')
-var util   = require('util')
+var assert      = require('affirm.js')
+var io          = require('socket.io-client')
+var util        = require('util')
+var bitcoinutil = require("bitcoinutil")
+var Url         = require('url')
 
-module.exports = (function (socketUri, network, index, insight, socket) {
+module.exports = (function (baseUri, insight) {
   var tuner              = {}
   var subscriptions      = {}
   var unconfirmedBalance = {}
-  var bitcoinutil        = require("bitcoinutil")(network)
-  var url                = socket ? undefined : socketUri
-  socket                 = socket || io(url, { rejectUnauthorized: true })
-
-  tuner.socket = socket
 
   tuner.subscribe = function (address, callback) {
     assert(Object.keys(subscriptions).length < 100, 'Too many addresses to watch, only 100 supported')
@@ -19,17 +16,29 @@ module.exports = (function (socketUri, network, index, insight, socket) {
     subscriptions[address]      = callback
   }
 
+  tuner.getSocketUri = function (baseurl) {
+    assert(baseurl, 'baseurl is not defined')
+    var urlObject = Url.parse(baseurl)
+    assert(urlObject, 'Invalid url object')
+    return Url.format({ protocol: urlObject.protocol, host: urlObject.host })
+  }
+
   tuner.unsubscribe = function (address) {
     delete subscriptions[address]
   }
 
-  socket.on('connect', function () {
-    util.log(Date.now(), 'Connected to insight websocket', url)
-    socket.emit('subscribe', 'inv')
-  })
-
-  socket.on('tx', callbackUnconfirmedTx)
-  socket.on('block', callbackConfirmedTx)
+  tuner.init = function () {
+    if (!tuner.socket) {
+      var uri      = tuner.getSocketUri(baseUri)
+      tuner.socket = io(uri, { rejectUnauthorized: true })
+    }
+    tuner.socket.on('connect', function () {
+      util.log(Date.now(), 'Connected to insight websocket', uri)
+      tuner.socket.emit('subscribe', 'inv')
+    })
+    tuner.socket.on('tx', callbackUnconfirmedTx)
+    tuner.socket.on('block', callbackConfirmedTx)
+  }
 
   function callbackUnconfirmedTx(data) {
     var match = false
@@ -39,7 +48,7 @@ module.exports = (function (socketUri, network, index, insight, socket) {
       }
     }
     if (match) {
-      addUnconfirmedInputs(data.txid).then(getBalances).catch(function(e) {
+      addUnconfirmedInputs(data.txid).then(getBalances).catch(function (e) {
         console.log('Error connecting to insight server', e)
       })
     }
@@ -76,7 +85,7 @@ module.exports = (function (socketUri, network, index, insight, socket) {
     return insight.getTransaction(txid)
       .then(function (tx) {
         for (var i = 0; i < tx.vin.length; i++) {
-          inputAddress = tx.vin[i].addr
+          var inputAddress = tx.vin[i].addr
           if (subscriptions[inputAddress]) unconfirmedBalance[inputAddress] = true
         }
         return Object.keys(unconfirmedBalance)
