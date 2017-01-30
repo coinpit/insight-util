@@ -1,6 +1,6 @@
 var bluebird = require('bluebird')
 var REST     = require('rest.js')
-var assert   = require('affirm.js')
+var affirm   = require('affirm.js')
 var xlat     = require('xlat')()
 var util     = require('util')
 
@@ -88,8 +88,16 @@ module.exports = function (baseUrl) {
   }
 
   function makeAddress(addresses) {
-    assert(addresses, 'Specify addresses for which to get unspents')
+    affirm(addresses, 'Specify addresses for which to get unspents')
     return Array.isArray(addresses) ? addresses.join(',') : addresses
+  }
+
+
+  insight.getCurrentMiningFee = function () {
+    return REST.get(baseUrl + "/utils/estimatefee").then(function (result) {
+      affirm(result.body && result.body[2] && !NaN(result.body[2]) && result.body[2] > 0, 'Invalid mining fee')
+      return (result.body[2] * 1e8).toFixed(0) - 0
+    })
   }
 
   function normalizeUnspents(unspents) {

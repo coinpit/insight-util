@@ -1,6 +1,6 @@
 {
   "name": "insight-util",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Listener for addresses balance and general apis to get address balance and utxos for a given insight installation",
   "main": "index.js",
   "scripts": {
