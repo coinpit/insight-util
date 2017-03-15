@@ -69,4 +69,10 @@ describe('Coin functions', function () {
     var results = yield insight.multi(insight.getAddress, fixtures.multi.address.source)
     expect(results).to.eql(fixtures.multi.address.value)
   })
+
+  it("should return current mining fee", function*(){
+    sinon.stub()
+    var fee = yield insight.getCurrentMiningFee()
+    expect(fee).to.eql(232802)
+  })
 })

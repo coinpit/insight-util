@@ -905,7 +905,8 @@
         "amount"       : 0.22,
         "confirmations": 0
       }
-    ]
+    ],
+    "insightUri/utils/estimatefee"                     : {"2":0.00232802}
   },
   "unspents"             : [
     {
