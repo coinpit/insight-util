@@ -9,6 +9,7 @@ var _             = require('lodash')
 require('mocha-generators').install()
 
 describe('Coin functions', function () {
+
   before(function () {
     sinon.stub(insight.rest, "get", function (url) {
       return bluebird.resolve({body:_.cloneDeep(fixtures.REST[url])})
@@ -22,6 +23,7 @@ describe('Coin functions', function () {
     insight.rest.get.restore()
     insight.rest.post.restore()
   })
+
 
   it('Should get unspents of an address', function*() {
     var unspents = yield insight.getUnspents(fixtures.address)
@@ -71,8 +73,12 @@ describe('Coin functions', function () {
   })
 
   it("should return current mining fee", function*(){
-    sinon.stub()
     var fee = yield insight.getCurrentMiningFee()
     expect(fee).to.eql(232802)
+  })
+  it("should return transactions for a given address", function*(){
+    var test = fixtures.txForAddress
+    var txs = yield insight.getTransactionsFor(test.address, test.from, test.to)
+    expect(txs).to.eql(test.result)
   })
 })

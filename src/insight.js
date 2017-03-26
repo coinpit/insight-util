@@ -100,6 +100,16 @@ module.exports = function (baseUrl) {
     })
   }
 
+  insight.getTransactionsFor = function(address, from, to){
+    affirm(address, 'Address is not specified')
+    from = from || 0
+    to = to||10
+    affirm(from >= 0 && to > 0 && to > from, "to and from must be positive number and from must be greater than to")
+    return REST.get(baseUrl + "/addrs/"+ address + "/txs?from=" + from + "&to=" + to).then(function(result){
+      return result.body
+    })
+  }
+
   function normalizeUnspents(unspents) {
     for (var i = 0; i < unspents.length; i++) {
       unspents[i].amount = ((unspents[i].amount * 1e8).toFixed(0) - 0)
