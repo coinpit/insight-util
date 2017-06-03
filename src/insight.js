@@ -74,7 +74,7 @@ module.exports = function (baseUrl) {
 
   insight.getRawTransaction = function getRawTransaction(txid) {
     return REST.get(baseUrl + '/rawtx/' + txid).then(function (result) {
-      return result.body
+      return result.body && result.body.rawtx
     })
   }
 
