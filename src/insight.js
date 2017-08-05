@@ -72,6 +72,12 @@ module.exports = function (baseUrl) {
     })
   }
 
+  insight.getRawTransaction = function getRawTransaction(txid) {
+    return REST.get(baseUrl + '/rawtx/' + txid).then(function (result) {
+      return result.body && result.body.rawtx
+    })
+  }
+
   insight.sendTransaction = function (tx) {
     if (insight.logging) util.log(Date.now(), "sendTransaction", tx)
     return REST.post(baseUrl + '/tx/' + 'send', { "content-type": "application/json" }, { rawtx: tx }).then(function (result) {

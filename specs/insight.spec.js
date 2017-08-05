@@ -67,6 +67,11 @@ describe('Coin functions', function () {
     expect(results).to.eql(fixtures.gettx.txbody)
   })
 
+  it('Should get raw transaction', function*() {
+    var results = yield insight.getRawTransaction(fixtures.getrawtx.txid)
+    expect(results).to.eql(fixtures.getrawtx.hex)
+  })
+
   it('Should call multiple apis', function*() {
     var results = yield insight.multi(insight.getAddress, fixtures.multi.address.source)
     expect(results).to.eql(fixtures.multi.address.value)
